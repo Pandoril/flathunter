@@ -73,14 +73,15 @@ class Kleinanzeigen(WebdriverCrawler):
 
             rooms = ""
             if len(tags) > 1:
-                rooms_match = re.match(r'(\d+)', tags[1].text)
+                rooms_match = re.search(r'\d+[.|,]*\d*', tags[1].text, flags=re.MULTILINE)
                 if rooms_match is not None:
-                    rooms = rooms_match[1]
-
+                    rooms = rooms_match.group()
+            
             try:
-                size = tags[0].text
+                size = tags[0].text.strip()
             except (IndexError, TypeError):
                 size = ""
+            
             details = {
                 'id': int(expose_ids[idx].get("data-adid")),
                 'image': image,
