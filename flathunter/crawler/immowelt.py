@@ -27,10 +27,22 @@ class Immowelt(Crawler):
 
         try:
             title = immo_div.find(
-                "h2", attrs={"data-testid": "aviv.CDP.Sections.Description.MainDescription.Title"}).text
+                        "h2", attrs={"data-testid": "aviv.CDP.Sections.Description.MainDescription.Title"}
+                    ).text  # type: ignore
         except:
             title = expose["title"]
         expose["title"] = title.strip()
+
+        try:
+            features_preview = immo_div.find(
+                        "ul", attrs={"data-testid": "aviv.CDP.Sections.Features.Preview"}
+                    )
+            if features_preview.find("Möbliert", attrs={}):  # type: ignore
+                expose['furnished'] = True
+            else:
+                expose['furnished'] = False
+        except:
+            pass
 
         return expose
 
